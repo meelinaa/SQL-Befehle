@@ -317,3 +317,48 @@ SELECT * FROM bestellungen WHERE bestelldatum >= NOW() - INTERVAL '7 days';
 ```
 
 ---
+
+## SQL Aggregatfunktionen Übersicht
+
+Diese Funktionen werden typischerweise mit `GROUP BY` verwendet, um Daten zu gruppieren und auszuwerten. Sie fassen mehrere Zeilen zu einer einzigen Auswertung pro Gruppe zusammen.
+
+---
+
+| Funktion    | Beschreibung                                                                 | Beispielanwendung                                   | Wann anwenden                                                                 |
+|-------------|-------------------------------------------------------------------------------|------------------------------------------------------|--------------------------------------------------------------------------------|
+| `SUM()`     | Addiert alle Werte einer Spalte                                              | `SELECT SUM(menge) FROM bestellungen;`              | Wenn du die Gesamtsumme z. B. von Bestellmengen, Preisen etc. brauchst         |
+| `AVG()`     | Berechnet den Durchschnitt aller Werte in einer Spalte                      | `SELECT AVG(preis) FROM produkte;`                  | Wenn du wissen willst, wie hoch z. B. der Durchschnittspreis ist               |
+| `COUNT()`   | Zählt, wie viele Zeilen vorhanden sind (oder wie viele Werte in einer Spalte)| `SELECT COUNT(*) FROM kunden;`                     | Wenn du wissen willst, wie viele Einträge es gibt – mit oder ohne Filter      |
+| `MIN()`     | Gibt den kleinsten Wert in einer Spalte zurück                              | `SELECT MIN(preis) FROM produkte;`                  | Wenn du den niedrigsten Preis, das früheste Datum etc. brauchst                |
+| `MAX()`     | Gibt den größten Wert in einer Spalte zurück                                | `SELECT MAX(preis) FROM produkte;`                  | Wenn du den höchsten Preis, das späteste Datum etc. brauchst                   |
+| `COUNT(DISTINCT)` | Zählt eindeutige Werte in einer Spalte                                 | `SELECT COUNT(DISTINCT kunde_id) FROM bestellungen;`| Wenn du wissen willst, wie viele verschiedene Kunden bestellt haben            |
+
+---
+
+## Beispiel mit `GROUP BY`
+
+```sql
+SELECT kunde, SUM(menge) AS gesamt_menge
+FROM bestellungen
+GROUP BY kunde;
+```
+
+⟶ Gibt die Gesamtmenge pro Kunde zurück.
+
+---
+
+## Hinweise
+- Aggregatfunktionen ignorieren `NULL`, außer bei `COUNT(*)`
+- `GROUP BY` kommt **nach** `WHERE`, aber **vor** `ORDER BY`
+- Du kannst mehrere Aggregatfunktionen gleichzeitig nutzen:
+
+```sql
+SELECT kunde,
+       COUNT(*) AS anzahl_bestellungen,
+       SUM(menge) AS gesamt,
+       AVG(menge) AS durchschnitt
+FROM bestellungen
+GROUP BY kunde;
+```
+
+---
